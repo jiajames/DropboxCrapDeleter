@@ -3,7 +3,7 @@ import java.io.File;
 import java.util.Scanner;
 
 /**
- * Delete everything in this directory and subdirectories with "._" at the beginning of the name. 
+ * Delete everything in this directory with given input prefix string.
 **/
 public class DropboxCrapDeleter {
 
@@ -15,17 +15,21 @@ public class DropboxCrapDeleter {
 
 			System.out.println("These are the subfiles:");
 
+			Scanner scanInput = new Scanner(System.in);
+			
 			for(File subFiles : file.listFiles()) {
 				System.out.println(subFiles.getName());
 			}
-
+			
 			System.out.print("Is this the correct Directory? Yes or No: ");
 			
-			Scanner scanInput = new Scanner(System.in);
 			String data = scanInput.nextLine();
-
+			
+			System.out.print("File prefix? ");
+			String prefix = scanInput.nextLine();
+			
 			if (data.equals("Yes") || data.equals("yes")) {
-				deleter(file);
+				deleter(file, prefix);
 			}
 
 			else {
@@ -47,16 +51,16 @@ public class DropboxCrapDeleter {
 
 	}
 
-	private static void deleter(File curDir) {
+	private static void deleter(File curDir, String prefix) {
 		for (File subFile : curDir.listFiles()) {
 
 			if (subFile.isDirectory()) {
-				deleter(subFile);
+				deleter(subFile, prefix);
 			}
 
 			else {
 				try {
-					if (subFile.getName().charAt(0) == '.' && subFile.getName().charAt(1) == '_') {
+					if (subFile.getName().substring(0, prefix.length()).equals(prefix)) {
 						if(subFile.delete()) {
 							System.out.println(subFile.getName() + " has been deleted.");
 						}
